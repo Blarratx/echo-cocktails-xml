@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -109,40 +110,49 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnPandora"
                 android:layout_width="80dp"
                 android:layout_height="60dp"
                 android:text="PANDORA"
                 android:textSize="10sp"
                 android:fontFamily="@font/luckiest_guy"
-                android:backgroundTint="#FFC300"
-                android:textColor="@color/black"
+                android:backgroundTint="#FF6B00"
+                android:textColor="#1C1B17"
+                app:strokeColor="#1C1B17"
+                app:strokeWidth="3dp"
+                app:cornerRadius="0dp"
                 android:layout_marginEnd="8dp"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnHyperion"
                 android:layout_width="80dp"
                 android:layout_height="60dp"
                 android:text="HYPERION"
                 android:textSize="10sp"
                 android:fontFamily="@font/luckiest_guy"
-                android:backgroundTint="#F1FAEE"
-                android:textColor="@color/black"
+                android:backgroundTint="#FFCC00"
+                android:textColor="#1A1A1A"
+                app:strokeColor="#1A1A1A"
+                app:strokeWidth="3dp"
+                app:cornerRadius="0dp"
                 android:layout_marginEnd="8dp"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMaliwan"
                 android:layout_width="80dp"
                 android:layout_height="60dp"
                 android:text="MALIWAN"
                 android:textSize="10sp"
                 android:fontFamily="@font/luckiest_guy"
-                android:backgroundTint="#06D6A0"
-                android:textColor="@color/black"
+                android:backgroundTint="#00F5D4"
+                android:textColor="#0A1F1A"
+                app:strokeColor="#0A1F1A"
+                app:strokeWidth="3dp"
+                app:cornerRadius="0dp"
                 android:layout_marginEnd="8dp"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnJakobs"
                 android:layout_width="80dp"
                 android:layout_height="60dp"
@@ -150,7 +160,25 @@
                 android:textSize="10sp"
                 android:fontFamily="@font/luckiest_guy"
                 android:backgroundTint="#D4A373"
-                android:textColor="@color/black"/>
+                android:textColor="#2A1F14"
+                app:strokeColor="#2A1F14"
+                app:strokeWidth="3dp"
+                app:cornerRadius="0dp"
+                android:layout_marginEnd="8dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGuac"
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:text="GUAC"
+                android:textSize="10sp"
+                android:fontFamily="@font/luckiest_guy"
+                android:backgroundTint="#C6FF00"
+                android:textColor="#1F2A0F"
+                app:strokeColor="#1F2A0F"
+                app:strokeWidth="3dp"
+                app:cornerRadius="0dp"/>
+
         </LinearLayout>
     </HorizontalScrollView>
 

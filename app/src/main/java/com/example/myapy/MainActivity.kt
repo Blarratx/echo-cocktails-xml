@@ -81,10 +81,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        binding.searchEditText.addTextChangedListener { 
+        binding.searchEditText.addTextChangedListener {
             viewModel.searchCocktails(it.toString())
         }
-        
+
         // Al pulsar el indicador de señal, rotamos el tema
         binding.signalIndicator.setOnClickListener {
             rotateTheme()
@@ -108,6 +108,10 @@ class MainActivity : AppCompatActivity() {
             dialogBinding.editUsername.setText(currentName)
             selectedAvatarIndex = themeManager.avatarFlow.first()
             highlightAvatar(dialogBinding, selectedAvatarIndex)
+
+            // Precargar tema actual y marcarlo visualmente
+            val currentTheme = themeManager.themeFlow.first().type
+            highlightTheme(dialogBinding, currentTheme)
         }
 
         // Listeners de avatares
@@ -116,11 +120,27 @@ class MainActivity : AppCompatActivity() {
         dialogBinding.avatar2.setOnClickListener { selectedAvatarIndex = 2; highlightAvatar(dialogBinding, 2) }
         dialogBinding.avatar3.setOnClickListener { selectedAvatarIndex = 3; highlightAvatar(dialogBinding, 3) }
 
-        // Listeners de temas
-        dialogBinding.btnPandora.setOnClickListener { updateTheme(ThemeType.PANDORA) }
-        dialogBinding.btnHyperion.setOnClickListener { updateTheme(ThemeType.HYPERION) }
-        dialogBinding.btnMaliwan.setOnClickListener { updateTheme(ThemeType.MALIWAN) }
-        dialogBinding.btnJakobs.setOnClickListener { updateTheme(ThemeType.JAKOBS) }
+        // Listeners de temas con feedback visual
+        dialogBinding.btnPandora.setOnClickListener {
+            highlightTheme(dialogBinding, ThemeType.PANDORA)
+            updateTheme(ThemeType.PANDORA)
+        }
+        dialogBinding.btnHyperion.setOnClickListener {
+            highlightTheme(dialogBinding, ThemeType.HYPERION)
+            updateTheme(ThemeType.HYPERION)
+        }
+        dialogBinding.btnMaliwan.setOnClickListener {
+            highlightTheme(dialogBinding, ThemeType.MALIWAN)
+            updateTheme(ThemeType.MALIWAN)
+        }
+        dialogBinding.btnJakobs.setOnClickListener {
+            highlightTheme(dialogBinding, ThemeType.JAKOBS)
+            updateTheme(ThemeType.JAKOBS)
+        }
+        dialogBinding.btnGuac.setOnClickListener {
+            highlightTheme(dialogBinding, ThemeType.GUAC)
+            updateTheme(ThemeType.GUAC)
+        }
 
         dialogBinding.btnSaveProfile.setOnClickListener {
             val newName = dialogBinding.editUsername.text.toString()
@@ -139,11 +159,19 @@ class MainActivity : AppCompatActivity() {
         dialogBinding.avatar1.alpha = if (index == 1) 1.0f else 0.4f
         dialogBinding.avatar2.alpha = if (index == 2) 1.0f else 0.4f
         dialogBinding.avatar3.alpha = if (index == 3) 1.0f else 0.4f
-        
+
         dialogBinding.avatar0.setPadding(if (index == 0) 0 else 8, if (index == 0) 0 else 8, if (index == 0) 0 else 8, if (index == 0) 0 else 8)
         dialogBinding.avatar1.setPadding(if (index == 1) 0 else 8, if (index == 1) 0 else 8, if (index == 1) 0 else 8, if (index == 1) 0 else 8)
         dialogBinding.avatar2.setPadding(if (index == 2) 0 else 8, if (index == 2) 0 else 8, if (index == 2) 0 else 8, if (index == 2) 0 else 8)
         dialogBinding.avatar3.setPadding(if (index == 3) 0 else 8, if (index == 3) 0 else 8, if (index == 3) 0 else 8, if (index == 3) 0 else 8)
+    }
+
+    private fun highlightTheme(dialogBinding: DialogUserProfileBinding, selected: ThemeType) {
+        dialogBinding.btnPandora.alpha = if (selected == ThemeType.PANDORA) 1.0f else 0.4f
+        dialogBinding.btnHyperion.alpha = if (selected == ThemeType.HYPERION) 1.0f else 0.4f
+        dialogBinding.btnMaliwan.alpha = if (selected == ThemeType.MALIWAN) 1.0f else 0.4f
+        dialogBinding.btnJakobs.alpha = if (selected == ThemeType.JAKOBS) 1.0f else 0.4f
+        dialogBinding.btnGuac.alpha = if (selected == ThemeType.GUAC) 1.0f else 0.4f
     }
 
     private fun updateTheme(type: ThemeType) {

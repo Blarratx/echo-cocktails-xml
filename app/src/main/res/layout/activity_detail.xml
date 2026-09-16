@@ -58,6 +58,17 @@
             android:textColor="@color/white"
             android:textStyle="bold" />
 
+        <!-- Modo Bartender: toggle pantalla siempre encendida -->
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/bartenderToggle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/luckiest_guy"
+            android:text="@string/bartender_off"
+            android:textColor="#FFC300"
+            android:textSize="16sp" />
+
         <TextView
             android:id="@+id/ingredientsLabel"
             android:layout_width="wrap_content"

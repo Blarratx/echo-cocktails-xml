@@ -2,6 +2,7 @@ package com.example.myapy
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -27,6 +28,17 @@ class DetailActivity : AppCompatActivity() {
 
         binding.backButton.setOnClickListener { finish() }
 
+        // Modo Bartender: toggle que mantiene la pantalla encendida
+        binding.bartenderToggle.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                binding.bartenderToggle.text = getString(R.string.bartender_on)
+            } else {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                binding.bartenderToggle.text = getString(R.string.bartender_off)
+            }
+        }
+
         val cocktailId = intent.getStringExtra("COCKTAIL_ID") ?: return
         loadDetails(cocktailId)
     }
@@ -42,6 +54,9 @@ class DetailActivity : AppCompatActivity() {
                 binding.detailIngredients.setTextColor(theme.textColor)
                 binding.detailInstructions.setTextColor(theme.textColor)
                 binding.backButton.backgroundTintList = ColorStateList.valueOf(theme.accentColor)
+
+                // Aplicar el color del tema al toggle Bartender
+                binding.bartenderToggle.setTextColor(theme.accentColor)
             }
         }
     }
@@ -53,7 +68,7 @@ class DetailActivity : AppCompatActivity() {
                 binding.detailCategory.text = "${it.category} | ${it.glass}"
                 binding.detailInstructions.text = it.instructions
                 binding.detailIngredients.text = it.getIngredientsWithMeasures().joinToString("\n")
-                
+
                 Glide.with(this@DetailActivity)
                     .load(it.imageUrl)
                     .into(binding.detailImage)
