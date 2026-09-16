@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.myapy.R
 import com.example.myapy.model.Cocktail
+import com.example.myapy.utils.DataTranslator
 
 class CocktailAdapter(private val onClick: (Cocktail) -> Unit) : 
     ListAdapter<Cocktail, CocktailAdapter.ViewHolder>(CocktailDiffCallback()) {
@@ -32,7 +33,12 @@ class CocktailAdapter(private val onClick: (Cocktail) -> Unit) :
 
         fun bind(cocktail: Cocktail, onClick: (Cocktail) -> Unit) {
             name.text = cocktail.name
-            category.text = cocktail.category ?: "Classic"
+            
+            // Traducir categoría para la lista
+            category.text = DataTranslator.translate(
+                cocktail.category, 
+                DataTranslator.TranslationType.CATEGORY
+            )
             
             Glide.with(itemView.context)
                 .load(cocktail.imageUrl)

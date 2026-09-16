@@ -11,6 +11,7 @@ data class Cocktail(
     @SerializedName("strDrink") val name: String,
     @SerializedName("strCategory") val category: String?,
     @SerializedName("strInstructions") val instructions: String?,
+    @SerializedName("strInstructionsES") val instructionsES: String?,
     @SerializedName("strDrinkThumb") val imageUrl: String,
     @SerializedName("strGlass") val glass: String?,
     

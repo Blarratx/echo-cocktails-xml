@@ -8,8 +8,10 @@ import com.bumptech.glide.Glide
 import com.example.myapy.data.CocktailRepository
 import com.example.myapy.databinding.ActivityDetailBinding
 import com.example.myapy.ui.theme.ThemeManager
+import com.example.myapy.utils.DataTranslator
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class DetailActivity : AppCompatActivity() {
 
@@ -50,9 +52,31 @@ class DetailActivity : AppCompatActivity() {
         repository.getCocktailDetails(id).onSuccess { cocktail ->
             cocktail?.let {
                 binding.detailName.text = it.name
-                binding.detailCategory.text = "${it.category} | ${it.glass}"
-                binding.detailInstructions.text = it.instructions
-                binding.detailIngredients.text = it.getIngredientsWithMeasures().joinToString("\n")
+                
+                // Traducción de Categoría y Copa
+                val translatedCat = DataTranslator.translate(
+                    it.category, DataTranslator.TranslationType.CATEGORY
+                )
+                val translatedGlass = DataTranslator.translate(
+                    it.glass, DataTranslator.TranslationType.GLASS
+                )
+                binding.detailCategory.text = "$translatedCat | $translatedGlass"
+
+                // Seleccionar instrucciones según el idioma del sistema
+                val lang = Locale.getDefault().language
+                val localizedInstructions = if (lang == "es") {
+                    it.instructionsES ?: it.instructions
+                } else {
+                    it.instructions
+                }
+                
+                binding.detailInstructions.text = localizedInstructions
+                
+                // Traducción de cada Ingrediente
+                val translatedIngredients = it.getIngredientsWithMeasures().map { ing ->
+                    DataTranslator.translate(ing, DataTranslator.TranslationType.INGREDIENT)
+                }
+                binding.detailIngredients.text = translatedIngredients.joinToString("\n")
                 
                 Glide.with(this@DetailActivity)
                     .load(it.imageUrl)
