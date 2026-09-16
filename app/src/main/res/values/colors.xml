@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Pandora (Default) -->
+    <color name="pandora_bg">#1A1A1A</color>
+    <color name="pandora_accent">#FFC300</color>
+    <color name="pandora_secondary">#E63946</color>
+
+    <!-- Hyperion -->
+    <color name="hyperion_bg">#F1FAEE</color>
+    <color name="hyperion_accent">#FFC300</color>
+    <color name="hyperion_secondary">#2B2B2B</color>
+
+    <!-- Maliwan -->
+    <color name="maliwan_bg">#0D1B2A</color>
+    <color name="maliwan_accent">#06D6A0</color>
+    <color name="maliwan_secondary">#118AB2</color>
+
+    <!-- Jakobs -->
+    <color name="jakobs_bg">#2B2118</color>
+    <color name="jakobs_accent">#D4A373</color>
+    <color name="jakobs_secondary">#8B5E34</color>
+
+    <!-- Comunes ECHO -->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+</resources>

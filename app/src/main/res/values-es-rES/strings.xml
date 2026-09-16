@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Cócteles ECHO</string>
+    <string name="echonet_signal">SEÑAL ECHONET: [|||||] 100%</string>
+    <string name="search_hint">BUSCAR CÓCTEL...</string>
+    <string name="default_username">BUSCADOR DE VAULT</string>
+    <string name="back_button">&lt; VOLVER</string>
+    <string name="ingredients_label">INGREDIENTES:</string>
+    <string name="instructions_label">INSTRUCCIONES:</string>
+    <string name="config_title">CONFIGURACIÓN ECHO-3</string>
+    <string name="vault_hunter_name_label">NOMBRE DEL VAULT HUNTER:</string>
+    <string name="select_avatar_label">SELECCIONAR AVATAR:</string>
+    <string name="select_theme_label">SELECCIONAR TEMA VISUAL:</string>
+    <string name="save_changes">GUARDAR CAMBIOS</string>
+    <string name="error_categories">Error al cargar categorías ECHOnet</string>
+    <string name="error_connection">Error de conexión con ECHOnet</string>
+    <string name="filter_failed">Filtro fallido</string>
+</resources>

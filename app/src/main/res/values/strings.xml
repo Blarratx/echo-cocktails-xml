@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">ECHO Cocktails</string>
+    <string name="echonet_signal">ECHONET SIGNAL: [|||||] 100%</string>
+    <string name="search_hint">SEARCH COCKTAIL...</string>
+    <string name="default_username">VAULT HUNTER</string>
+    <string name="back_button">&lt; BACK</string>
+    <string name="ingredients_label">INGREDIENTS:</string>
+    <string name="instructions_label">INSTRUCTIONS:</string>
+    <string name="config_title">ECHO-3 CONFIGURATION</string>
+    <string name="vault_hunter_name_label">VAULT HUNTER NAME:</string>
+    <string name="select_avatar_label">SELECT AVATAR:</string>
+    <string name="select_theme_label">SELECT VISUAL THEME:</string>
+    <string name="save_changes">SAVE CHANGES</string>
+    <string name="error_categories">Error loading ECHOnet categories</string>
+    <string name="error_connection">Connection error with ECHOnet</string>
+    <string name="filter_failed">Filter failed</string>
+</resources>
