@@ -4,8 +4,10 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -22,6 +24,7 @@ import com.example.myapy.ui.theme.ThemeType
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,11 +33,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var themeManager: ThemeManager
     private lateinit var cocktailAdapter: CocktailAdapter
 
+    private val speechRecognizerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data
+            val results = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            if (!results.isNullOrEmpty()) {
+                val spokenText = results[0]
+                binding.searchEditText.setText(spokenText)
+            }
+        }
+    }
+
     private val avatars = intArrayOf(
-        com.example.myapy.R.drawable.ic_claptrap_standard,
-        com.example.myapy.R.drawable.ic_claptrap_hyperion,
-        com.example.myapy.R.drawable.ic_claptrap_maliwan,
-        com.example.myapy.R.drawable.ic_claptrap_stealth
+        R.drawable.ic_claptrap_standard,
+        R.drawable.ic_claptrap_hyperion,
+        R.drawable.ic_claptrap_maliwan,
+        R.drawable.ic_claptrap_stealth
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,6 +99,10 @@ class MainActivity : AppCompatActivity() {
             viewModel.searchCocktails(it.toString())
         }
 
+        binding.voiceSearchButton.setOnClickListener {
+            startVoiceSearch()
+        }
+
         // Al pulsar el indicador de señal, rotamos el tema
         binding.signalIndicator.setOnClickListener {
             rotateTheme()
@@ -92,6 +110,19 @@ class MainActivity : AppCompatActivity() {
 
         binding.userProfileSection.setOnClickListener {
             showUserProfileDialog()
+        }
+    }
+
+    private fun startVoiceSearch() {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.search_hint))
+        }
+        try {
+            speechRecognizerLauncher.launch(intent)
+        } catch (_: Exception) {
+            Toast.makeText(this, getString(R.string.voice_not_supported), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -141,6 +172,10 @@ class MainActivity : AppCompatActivity() {
             highlightTheme(dialogBinding, ThemeType.GUAC)
             updateTheme(ThemeType.GUAC)
         }
+        dialogBinding.btnTorgue.setOnClickListener {
+            highlightTheme(dialogBinding, ThemeType.TORGUE)
+            updateTheme(ThemeType.TORGUE)
+        }
 
         dialogBinding.btnSaveProfile.setOnClickListener {
             val newName = dialogBinding.editUsername.text.toString()
@@ -172,6 +207,7 @@ class MainActivity : AppCompatActivity() {
         dialogBinding.btnMaliwan.alpha = if (selected == ThemeType.MALIWAN) 1.0f else 0.4f
         dialogBinding.btnJakobs.alpha = if (selected == ThemeType.JAKOBS) 1.0f else 0.4f
         dialogBinding.btnGuac.alpha = if (selected == ThemeType.GUAC) 1.0f else 0.4f
+        dialogBinding.btnTorgue.alpha = if (selected == ThemeType.TORGUE) 1.0f else 0.4f
     }
 
     private fun updateTheme(type: ThemeType) {
@@ -189,6 +225,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     is MainUiState.Success -> {
                         binding.progressBar.visibility = View.GONE
+                        binding.emptyStateTextView.visibility = if (state.cocktails.isEmpty()) View.VISIBLE else View.GONE
                         cocktailAdapter.submitList(state.cocktails)
                     }
                     is MainUiState.Error -> {
@@ -209,18 +246,34 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             themeManager.themeFlow.collectLatest { theme ->
                 applyTheme(theme)
+                cocktailAdapter.updateTheme(theme)
+                startScanLineAnimation()
             }
         }
+    }
+
+    private fun startScanLineAnimation() {
+        binding.echoScanLine.animate().cancel()
+        binding.echoScanLine.translationY = -200f
+        binding.echoScanLine.animate()
+            .translationY(binding.rootLayout.height.toFloat() + 200f)
+            .setDuration(4000)
+            .withEndAction { if (!isFinishing) startScanLineAnimation() }
+            .start()
     }
 
     private fun applyTheme(theme: AppTheme) {
         binding.rootLayout.setBackgroundColor(theme.backgroundColor)
         binding.signalIndicator.setTextColor(theme.accentColor)
         binding.userNameTextView.setTextColor(theme.accentColor)
-        binding.userAvatarIcon.imageTintList = ColorStateList.valueOf(theme.accentColor)
+        binding.emptyStateTextView.setTextColor(theme.accentColor)
+        // Eliminamos el tintado del icono para ver los colores reales de Claptrap
+        binding.userAvatarIcon.imageTintList = null 
         binding.searchEditText.setTextColor(theme.textColor)
         binding.searchEditText.setHintTextColor(theme.textColor.withAlpha(128))
         binding.searchEditText.backgroundTintList = ColorStateList.valueOf(theme.accentColor)
+        binding.voiceSearchButton.backgroundTintList = ColorStateList.valueOf(theme.accentColor)
+        binding.voiceSearchButton.imageTintList = ColorStateList.valueOf(theme.textColor)
         binding.echoFrame.backgroundTintList = ColorStateList.valueOf(theme.accentColor)
     }
 
@@ -231,7 +284,7 @@ class MainActivity : AppCompatActivity() {
     private fun rotateTheme() {
         lifecycleScope.launch {
             val currentTheme = themeManager.themeFlow.first()
-            val themes = ThemeType.values()
+            val themes = ThemeType.entries
             val nextIndex = (currentTheme.type.ordinal + 1) % themes.size
             themeManager.saveTheme(themes[nextIndex])
         }

@@ -14,6 +14,15 @@
         android:layout_height="match_parent"
         android:background="@drawable/echo_frame_border" />
 
+    <!-- Línea de Escaneo ECHO (Animada) -->
+    <View
+        android:id="@+id/echoScanLine"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/echo_scan_line"
+        android:alpha="0.2"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <!-- Panel de Señal ECHOnet -->
     <TextView
         android:id="@+id/signalIndicator"
@@ -67,28 +76,64 @@
         </FrameLayout>
     </LinearLayout>
 
-    <!-- Buscador -->
-    <EditText
-        android:id="@+id/searchEditText"
+    <!-- Buscador y Botón de Voz -->
+    <LinearLayout
+        android:id="@+id/searchContainer"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:hint="@string/search_hint"
-        android:background="@drawable/echo_card_bg"
-        android:padding="10dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_margin="16dp"
-        android:inputType="text"
         app:layout_constraintTop_toBottomOf="@id/signalIndicator"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:hint="@string/search_hint"
+            android:background="@drawable/echo_card_bg"
+            android:padding="10dp"
+            android:inputType="text"
+            android:textColor="@color/black" />
+
+        <ImageButton
+            android:id="@+id/voiceSearchButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/echo_card_bg"
+            android:src="@android:drawable/ic_btn_speak_now"
+            android:contentDescription="@string/voice_search_desc"
+            app:tint="@color/black" />
+    </LinearLayout>
 
     <!-- Lista -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/searchEditText"
+        app:layout_constraintTop_toBottomOf="@id/searchContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         android:padding="8dp"/>
+
+    <!-- Estado Vacío -->
+    <TextView
+        android:id="@+id/emptyStateTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:gravity="center"
+        android:text="@string/no_results"
+        android:fontFamily="@font/luckiest_guy"
+        android:textColor="#FFC300"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/searchContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- Loading (Simple ProgressBar for now) -->
     <ProgressBar

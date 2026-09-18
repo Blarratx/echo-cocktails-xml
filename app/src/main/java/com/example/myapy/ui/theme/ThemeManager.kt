@@ -10,38 +10,38 @@ import kotlinx.coroutines.flow.map
 private val Context.dataStore by preferencesDataStore(name = "echo_settings")
 
 class ThemeManager(private val context: Context) {
-    private val THEME_KEY = stringPreferencesKey("app_theme")
-    private val USERNAME_KEY = stringPreferencesKey("username")
-    private val AVATAR_KEY = stringPreferencesKey("user_avatar")
+    private val themeKey = stringPreferencesKey("app_theme")
+    private val usernameKey = stringPreferencesKey("username")
+    private val avatarKey = stringPreferencesKey("user_avatar")
 
     val themeFlow: Flow<AppTheme> = context.dataStore.data.map { prefs ->
-        val themeName = prefs[THEME_KEY] ?: ThemeType.PANDORA.name
+        val themeName = prefs[themeKey] ?: ThemeType.PANDORA.name
         AppTheme.getTheme(ThemeType.valueOf(themeName))
     }
 
     val usernameFlow: Flow<String?> = context.dataStore.data.map { prefs ->
-        prefs[USERNAME_KEY]
+        prefs[usernameKey]
     }
 
     val avatarFlow: Flow<Int> = context.dataStore.data.map { prefs ->
-        prefs[AVATAR_KEY]?.toInt() ?: 0 // 0 will be our default avatar index
+        prefs[avatarKey]?.toInt() ?: 0
     }
 
     suspend fun saveTheme(themeType: ThemeType) {
         context.dataStore.edit { prefs ->
-            prefs[THEME_KEY] = themeType.name
+            prefs[themeKey] = themeType.name
         }
     }
 
     suspend fun saveUsername(name: String) {
         context.dataStore.edit { prefs ->
-            prefs[USERNAME_KEY] = name
+            prefs[usernameKey] = name
         }
     }
 
     suspend fun saveAvatar(index: Int) {
         context.dataStore.edit { prefs ->
-            prefs[AVATAR_KEY] = index.toString()
+            prefs[avatarKey] = index.toString()
         }
     }
 }

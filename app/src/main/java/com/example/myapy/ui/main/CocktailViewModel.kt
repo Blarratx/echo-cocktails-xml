@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+import kotlin.time.Duration.Companion.milliseconds
+
 class CocktailViewModel : ViewModel() {
     private val repository = CocktailRepository()
 
@@ -38,7 +40,7 @@ class CocktailViewModel : ViewModel() {
     fun searchCocktails(query: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            if (query.isNotEmpty()) delay(500) // Debounce
+            if (query.isNotEmpty()) delay(500.milliseconds) // Debounce
             
             _uiState.value = MainUiState.Loading
             repository.searchCocktails(query).onSuccess { drinks ->
@@ -46,15 +48,6 @@ class CocktailViewModel : ViewModel() {
             }.onFailure {
                 _uiState.value = MainUiState.Error("Error de conexión con ECHOnet")
             }
-        }
-    }
-
-    fun filterByCategory(category: String) = viewModelScope.launch {
-        _uiState.value = MainUiState.Loading
-        repository.filterByCategory(category).onSuccess { drinks ->
-            _uiState.value = MainUiState.Success(drinks, allCategories)
-        }.onFailure {
-            _uiState.value = MainUiState.Error("Filtro fallido")
         }
     }
 }

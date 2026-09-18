@@ -14,4 +14,15 @@
     <string name="error_categories">Error al cargar categorías ECHOnet</string>
     <string name="error_connection">Error de conexión con ECHOnet</string>
     <string name="filter_failed">Filtro fallido</string>
+    <string name="bartender_on">MODO BARTENDER: ON</string>
+    <string name="bartender_off">MODO BARTENDER: OFF</string>
+    <string name="voice_search_desc">Búsqueda por voz</string>
+    <string name="theme_pandora">PANDORA</string>
+    <string name="theme_hyperion">HYPERION</string>
+    <string name="theme_maliwan">MALIWAN</string>
+    <string name="theme_jakobs">JAKOBS</string>
+    <string name="theme_guac">GUAC</string>
+    <string name="theme_torgue">TORGUE</string>
+    <string name="no_results">NO SE ENCONTRARON CÓCTELES EN ECHONET</string>
+    <string name="voice_not_supported">Búsqueda por voz no soportada</string>
 </resources>
