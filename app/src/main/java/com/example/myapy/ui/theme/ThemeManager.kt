@@ -16,7 +16,8 @@ class ThemeManager(private val context: Context) {
 
     val themeFlow: Flow<AppTheme> = context.dataStore.data.map { prefs ->
         val themeName = prefs[themeKey] ?: ThemeType.PANDORA.name
-        AppTheme.getTheme(ThemeType.valueOf(themeName))
+        val themeType = runCatching { ThemeType.valueOf(themeName) }.getOrDefault(ThemeType.PANDORA)
+        AppTheme.getTheme(themeType)
     }
 
     val usernameFlow: Flow<String?> = context.dataStore.data.map { prefs ->
@@ -24,7 +25,7 @@ class ThemeManager(private val context: Context) {
     }
 
     val avatarFlow: Flow<Int> = context.dataStore.data.map { prefs ->
-        prefs[avatarKey]?.toInt() ?: 0
+        prefs[avatarKey]?.toIntOrNull() ?: 0
     }
 
     suspend fun saveTheme(themeType: ThemeType) {

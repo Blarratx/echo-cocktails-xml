@@ -11,7 +11,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapy.databinding.ActivityMainBinding
 import com.example.myapy.databinding.DialogUserProfileBinding
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         R.drawable.ic_claptrap_standard,
         R.drawable.ic_claptrap_hyperion,
         R.drawable.ic_claptrap_maliwan,
-        R.drawable.ic_claptrap_stealth
+        R.drawable.ic_claptrap_stealth,
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,16 +69,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeUsername() {
         lifecycleScope.launch {
-            themeManager.usernameFlow.collectLatest { name ->
-                binding.userNameTextView.text = (name ?: getString(R.string.default_username)).uppercase()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                themeManager.usernameFlow.collectLatest { name ->
+                    binding.userNameTextView.text = (name ?: getString(R.string.default_username)).uppercase()
+                }
             }
         }
     }
 
     private fun observeAvatar() {
         lifecycleScope.launch {
-            themeManager.avatarFlow.collectLatest { index ->
-                binding.userAvatarIcon.setImageResource(avatars[index % avatars.size])
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                themeManager.avatarFlow.collectLatest { index ->
+                    binding.userAvatarIcon.setImageResource(avatars[index % avatars.size])
+                }
             }
         }
     }
@@ -218,24 +224,29 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         lifecycleScope.launch {
-            viewModel.uiState.collectLatest { state ->
-                when (state) {
-                    is MainUiState.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-                    is MainUiState.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.emptyStateTextView.visibility = if (state.cocktails.isEmpty()) View.VISIBLE else View.GONE
-                        cocktailAdapter.submitList(state.cocktails)
-                    }
-                    is MainUiState.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        val errorMsg = when(state.message) {
-                            "Error al cargar categorías ECHOnet" -> getString(R.string.error_categories)
-                            "Error de conexión con ECHOnet" -> getString(R.string.error_connection)
-                            else -> state.message
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collectLatest { state ->
+                    when (state) {
+                        is MainUiState.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
                         }
-                        Toast.makeText(this@MainActivity, errorMsg, Toast.LENGTH_SHORT).show()
+
+                        is MainUiState.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.emptyStateTextView.visibility =
+                                if (state.cocktails.isEmpty()) View.VISIBLE else View.GONE
+                            cocktailAdapter.submitList(state.cocktails)
+                        }
+
+                        is MainUiState.Error -> {
+                            binding.progressBar.visibility = View.GONE
+                            val errorMsg = when (state.message) {
+                                "Error al cargar categorías ECHOnet" -> getString(R.string.error_categories)
+                                "Error de conexión con ECHOnet" -> getString(R.string.error_connection)
+                                else -> state.message
+                            }
+                            Toast.makeText(this@MainActivity, errorMsg, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
@@ -244,10 +255,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeTheme() {
         lifecycleScope.launch {
-            themeManager.themeFlow.collectLatest { theme ->
-                applyTheme(theme)
-                cocktailAdapter.updateTheme(theme)
-                startScanLineAnimation()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                themeManager.themeFlow.collectLatest { theme ->
+                    applyTheme(theme)
+                    cocktailAdapter.updateTheme(theme)
+                    startScanLineAnimation()
+                }
             }
         }
     }
@@ -268,7 +281,7 @@ class MainActivity : AppCompatActivity() {
         binding.userNameTextView.setTextColor(theme.accentColor)
         binding.emptyStateTextView.setTextColor(theme.accentColor)
         // Eliminamos el tintado del icono para ver los colores reales de Claptrap
-        binding.userAvatarIcon.imageTintList = null 
+        binding.userAvatarIcon.imageTintList = null
         binding.searchEditText.setTextColor(theme.textColor)
         binding.searchEditText.setHintTextColor(theme.textColor.withAlpha(128))
         binding.searchEditText.backgroundTintList = ColorStateList.valueOf(theme.accentColor)

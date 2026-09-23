@@ -43,16 +43,22 @@ object DataTranslator {
     )
 
     fun translate(text: String?, type: TranslationType): String {
-        val nonNullText = text ?: return ""
+        val nonNullText = text?.trim() ?: return ""
+        if (nonNullText.isEmpty()) return ""
         if (Locale.getDefault().language != "es") return nonNullText
 
         return when (type) {
             TranslationType.CATEGORY -> categories[nonNullText] ?: nonNullText
             TranslationType.GLASS -> glasses[nonNullText] ?: nonNullText
             TranslationType.INGREDIENT -> {
+                // Búsqueda directa primero para evitar reemplazos de subcadenas innecesarios
+                ingredients[nonNullText]?.let { return it }
+
                 var translated = nonNullText
                 ingredients.forEach { (en, es) ->
-                    translated = translated.replace(en, es, ignoreCase = true)
+                    if (translated.contains(en, ignoreCase = true)) {
+                        translated = translated.replace(en, es, ignoreCase = true)
+                    }
                 }
                 translated
             }
